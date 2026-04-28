@@ -70,7 +70,7 @@ WaitForSystemReady
 
 ## 🎥 Demo
 
-📹 Demo video: `demo/Demo.mp4`
+📹 Demo video: https://youtu.be/uHSrcdVAagU
 
 > The demo shows approximate end-to-end execution.
 > The system is functional but not fully stable due to simulation and timing constraints.
