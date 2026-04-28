@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:macro name="so101_new_calib_ros2_control" params="name initial_positions_file use_fake_hardware">
+        <xacro:property name="initial_positions" value="${xacro.load_yaml(initial_positions_file)['initial_positions']}"/>
+
+        <ros2_control name="${name}" type="system">
+            <hardware>
+                <xacro:if value="${use_fake_hardware}">
+                    <!-- <plugin>mock_components/GenericSystem</plugin> -->
+                    <!-- <plugin>topic_based_ros2_control/TopicBasedSystem</plugin>
+                    <param name="joint_states_topic">/isaac_joint_states</param>
+                    <param name="joint_commands_topic">/isaac_joint_command</param> -->
+                    <plugin>joint_state_topic_hardware_interface/JointStateTopicSystem</plugin>
+                    <param name="joint_states_topic">/isaac_joint_states</param>
+                    <param name="joint_commands_topic">/isaac_joint_command</param>
+                    <param name="sum_wrapped_joint_states">true</param>
+                </xacro:if>
+                <xacro:unless value="${use_fake_hardware}">
+                    <plugin>so_arm_100_controller/SOARM100Interface</plugin>
+                    <param name="use_serial">true</param>
+                    <param name="serial_port">/dev/ttyACM0</param>
+                    <param name="serial_baudrate">1000000</param>
+                    <param name="joint_map.shoulder_pan">Shoulder_Rotation</param>
+                    <param name="joint_map.shoulder_lift">Shoulder_Pitch</param>
+                    <param name="joint_map.elbow_flex">Elbow</param>
+                    <param name="joint_map.wrist_flex">Wrist_Pitch</param>
+                    <param name="joint_map.wrist_roll">Wrist_Roll</param>
+                    <param name="joint_map.gripper">Gripper</param>
+                </xacro:unless>
+            </hardware>
+
+            <joint name="shoulder_pan">
+                <command_interface name="position"/>
+                <state_interface name="position">
+                  <param name="initial_value">${initial_positions['shoulder_pan']}</param>
+                </state_interface>
+                <state_interface name="effort"/>
+            </joint>
+            <joint name="shoulder_lift">
+                <command_interface name="position"/>
+                <state_interface name="position">
+                  <param name="initial_value">${initial_positions['shoulder_lift']}</param>
+                </state_interface>
+                <state_interface name="effort"/>
+            </joint>
+            <joint name="elbow_flex">
+                <command_interface name="position"/>
+                <state_interface name="position">
+                  <param name="initial_value">${initial_positions['elbow_flex']}</param>
+                </state_interface>
+                <state_interface name="effort"/>
+            </joint>
+            <joint name="wrist_flex">
+                <command_interface name="position"/>
+                <state_interface name="position">
+                  <param name="initial_value">${initial_positions['wrist_flex']}</param>
+                </state_interface>
+                <state_interface name="effort"/>
+            </joint>
+            <joint name="wrist_roll">
+                <command_interface name="position"/>
+                <state_interface name="position">
+                  <param name="initial_value">${initial_positions['wrist_roll']}</param>
+                </state_interface>
+                <state_interface name="effort"/>
+            </joint>
+            <joint name="gripper">
+                <command_interface name="position"/>
+                <state_interface name="position">
+                  <param name="initial_value">${initial_positions['gripper']}</param>
+                </state_interface>
+                <state_interface name="effort"/>
+            </joint>
+
+        </ros2_control>
+    </xacro:macro>
+</robot>
